@@ -1,7 +1,7 @@
 name: r2s Lean版openwrt minimal 
 
 on:
-  push:
+#  push:
 #    branches:
 #      - master
 #    paths:

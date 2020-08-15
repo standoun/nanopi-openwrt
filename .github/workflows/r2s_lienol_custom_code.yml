@@ -1,7 +1,7 @@
 name: r2s Lienol版openwrt
 
 on:
-  push:
+#  push:
 #    branches:
 #      - master
     paths:
