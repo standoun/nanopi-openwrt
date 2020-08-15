@@ -1,11 +1,11 @@
 name: r2s Lienol版openwrt
 
 on:
-#  push:
+  push:
 #    branches:
 #      - master
-#    paths:
-#      - '.github/workflows/r2s_lienol_custom.yml'
+    paths:
+      - '.github/workflows/r2s_lienol_custom.yml'
 #  schedule:
 #    - cron: '0 7 * * 5'
 
@@ -73,8 +73,17 @@ jobs:
           sed -i '/exit/i\chown -R root:root /usr/share/netdata/web' package/default-settings/files/zzz-default-settings
           sed -i 's/option fullcone\t1/option fullcone\t0/' package/network/config/firewall/files/firewall.config
           sed -i '/8.8.8.8/d' package/base-files/files/root/setup.sh
-          echo -e '\nDYC Build\n'  >> package/base-files/files/etc/banner
-          
+          #echo -e '\nDYC Build\n'  >> package/base-files/files/etc/banner
+
+      - name: Add OpenClash
+        run: |
+          git clone -b master https://github.com/vernesong/OpenClash.git 
+          mv OpenClash/luci-app-openclash friendlywrt-rk3328/friendlywrt/package
+          cd friendlywrt-rk3328/friendlywrt/package/base-files/files
+          mkdir -p etc/openclash/core && cd etc/openclash/core
+          curl -L https://github.com/vernesong/OpenClash/releases/download/Clash/clash-linux-armv8.tar.gz | tar zxf -
+          chmod +x clash
+
       - name: Mod luci
         run: |
           cd friendlywrt-rk3328/friendlywrt
