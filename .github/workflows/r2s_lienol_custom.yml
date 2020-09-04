@@ -60,8 +60,7 @@ jobs:
           cp ../config_rk3328_custom_lienol.seed  configs/config_rk3328
           echo 'CONFIG_KERNEL_CGROUPS=y' >> configs/config_rk3328
           cd friendlywrt
-          #git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
-          git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
+          git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
           git remote add upstream https://github.com/Lienol/openwrt && git fetch upstream
           git checkout upstream/dev-19.07 -b tmp
           git mv README.md README && git commit -m 'undo rename readme for rebasing'
