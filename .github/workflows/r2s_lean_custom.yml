@@ -56,10 +56,8 @@ jobs:
           cd friendlywrt-rk3328
           . ../remove_unused_config.sh
           cp ../config_rk3328_custom_lean.seed  configs/config_rk3328
-          git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
           cd friendlywrt
-          #git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
-          git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
+          git config --local user.email "action@github.com" && git config --local user.name "GitHub Action"
           git remote add upstream https://github.com/coolsnowwolf/openwrt && git fetch upstream
           git checkout upstream/lede-17.01 -b tmp
           #git checkout 33f7cb735300bd9a099995236ed768c8925fec75 -- target/linux/sunxi/image/
