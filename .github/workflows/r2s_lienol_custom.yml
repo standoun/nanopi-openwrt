@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/r2s_lienol_custom.yml'
   schedule:
-    - cron: '0 7 * * 5'
+    # - cron: '0 7 * * 5'
 
 jobs:
 
@@ -84,47 +84,89 @@ jobs:
           ./scripts/feeds update -a && ./scripts/feeds install -a
           sed -i '/Load Average/i\<div class="tr"><div class="td left" width="33%"><%:CPU Temperature%></div><div class="td left" id="_cputemp"><%=luci.sys.exec("cut -c1-2 /sys/class/thermal/thermal_zone0/temp")%></div></div>' feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
           sed -i 's/pcdata(boardinfo.system or "?")/"ARMv8"/' feeds/luci/modules/luci-mod-admin-full/luasrc/view/admin_status/index.htm
-          
-      - name: Build FriendlyWrt
-        run: |
-          cd friendlywrt-rk3328
-          sed -i 's/set -eu/set -u/' scripts/mk-friendlywrt.sh
-          ./build.sh nanopi_r2s.mk
-          cd .. && sudo bash fix_ownership.sh
+
+
+
 
       - name: Zip Files
         run: |
-          gzip friendlywrt-rk3328/out/*.img
+          tar czvf friendlywrt-rk3328.tar.gz friendlywrt-rk3328
+
       - name: Assemble Artifact
         id: assemble_artifact
         run: |
-          rm -rf ./artifact/
-          mkdir -p ./artifact/
+            rm -rf ./artifact/
+            mkdir -p ./artifact/
+            mv friendlywrt-rk3328.tar.gz ./artifact/
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@master
+      #   with:
+      #     name: OpenWrt firmware
+      #     path: ./artifact/
+
+
+
+
+      - name: Build FriendlyWrt
+        run: |
+          # cd friendlywrt-rk3328
+          # sed -i 's/set -eu/set -u/' scripts/mk-friendlywrt.sh
+          # ./build.sh nanopi_r2s.mk
+          # cd .. && sudo bash fix_ownership.sh
+
+      - name: Assemble Artifact
+        id: assemble_artifact
+        run: |
           mv friendlywrt-rk3328/out/*img* ./artifact/
           cp friendlywrt-rk3328/friendlywrt/.config ./artifact/
           cd ./artifact/
           md5sum *img* > md5sum.txt
           cd ..
           zip -r artifact.zip ./artifact/
-          release_tag="R2S-Lienol-$(date +%Y-%m-%d)"
-          echo "##[set-output name=release_tag;]$release_tag"
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@master
         with:
-          tag_name: ${{ steps.assemble_artifact.outputs.release_tag }}
-          release_name: 自动发布 ${{ steps.assemble_artifact.outputs.release_tag }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./artifact.zip
-          asset_name: ${{ steps.assemble_artifact.outputs.release_tag }}-ROM.zip
-          asset_content_type: application/zip
+          name: OpenWrt firmware
+          path: ./artifact/
+
+
+
+
+      # - name: Zip Files
+      #   run: |
+      #     gzip friendlywrt-rk3328/out/*.img
+      # - name: Assemble Artifact
+      #   id: assemble_artifact
+      #   run: |
+      #     rm -rf ./artifact/
+      #     mkdir -p ./artifact/
+      #     mv friendlywrt-rk3328/out/*img* ./artifact/
+      #     cp friendlywrt-rk3328/friendlywrt/.config ./artifact/
+      #     cd ./artifact/
+      #     md5sum *img* > md5sum.txt
+      #     cd ..
+      #     zip -r artifact.zip ./artifact/
+      #     release_tag="R2S-Lienol-$(date +%Y-%m-%d)"
+      #     echo "##[set-output name=release_tag;]$release_tag"
+
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.assemble_artifact.outputs.release_tag }}
+      #     release_name: 自动发布 ${{ steps.assemble_artifact.outputs.release_tag }}
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload Release Asset
+      #   id: upload-release-asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+      #     asset_path: ./artifact.zip
+      #     asset_name: ${{ steps.assemble_artifact.outputs.release_tag }}-ROM.zip
+      #     asset_content_type: application/zip

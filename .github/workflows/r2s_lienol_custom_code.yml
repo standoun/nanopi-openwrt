@@ -71,16 +71,12 @@ jobs:
           sed -i '/exit/i\chown -R root:root /usr/share/netdata/web' package/default-settings/files/zzz-default-settings
           sed -i 's/option fullcone\t1/option fullcone\t0/' package/network/config/firewall/files/firewall.config
           sed -i '/8.8.8.8/d' package/base-files/files/root/setup.sh
-          echo -e '\nDYC Build\n'  >> package/base-files/files/etc/banner
+          #echo -e '\nDYC Build\n'  >> package/base-files/files/etc/banner
 
       - name: Add OpenClash
         run: |
           git clone -b master https://github.com/vernesong/OpenClash.git 
           mv OpenClash/luci-app-openclash friendlywrt-rk3328/friendlywrt/package
-          #cd friendlywrt-rk3328/friendlywrt/package/base-files/files
-          #mkdir -p etc/openclash/core && cd etc/openclash/core
-          #curl -L https://github.com/vernesong/OpenClash/releases/download/Clash/clash-linux-armv8.tar.gz | tar zxf -
-          #chmod +x clash
 
       - name: Mod luci
         run: |
@@ -94,11 +90,10 @@ jobs:
           cd friendlywrt-rk3328
           sed -i 's/set -eu/set -u/' scripts/mk-friendlywrt.sh
           #./build.sh nanopi_r2s.mk
-          cd .. && sudo bash fix_ownership.sh
+          #cd .. && sudo bash fix_ownership.sh
 
       - name: Zip Files
         run: |
-          #gzip friendlywrt-rk3328/out/*.img
           tar czvf friendlywrt-rk3328.tar.gz friendlywrt-rk3328
 
       - name: Assemble Artifact
