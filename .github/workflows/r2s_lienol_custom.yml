@@ -88,12 +88,12 @@ jobs:
 
 
 
-      - name: Zip Files
+      - name: Zip Files1
         run: |
           tar czvf friendlywrt-rk3328.tar.gz friendlywrt-rk3328
 
-      - name: Assemble Artifact
-        id: assemble_artifact
+      - name: Assemble Artifact1
+        id: assemble_artifact1
         run: |
             rm -rf ./artifact/
             mkdir -p ./artifact/
@@ -114,8 +114,8 @@ jobs:
           # ./build.sh nanopi_r2s.mk
           # cd .. && sudo bash fix_ownership.sh
 
-      - name: Assemble Artifact
-        id: assemble_artifact
+      - name: Assemble Artifact2
+        id: assemble_artifact2
         run: |
           mv friendlywrt-rk3328/out/*img* ./artifact/
           cp friendlywrt-rk3328/friendlywrt/.config ./artifact/
