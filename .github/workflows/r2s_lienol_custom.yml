@@ -88,21 +88,19 @@ jobs:
 
 
 
-      - name: Zip Files1
-        run: |
-          tar czvf friendlywrt-rk3328.tar.gz friendlywrt-rk3328
-
       - name: Assemble Artifact1
         id: assemble_artifact1
         run: |
-            rm -rf ./artifact/
-            mkdir -p ./artifact/
-            mv friendlywrt-rk3328.tar.gz ./artifact/
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@master
-      #   with:
-      #     name: OpenWrt firmware
-      #     path: ./artifact/
+            tar czvf friendlywrt-rk3328.tar.gz friendlywrt-rk3328
+            rm -rf ./artifact1/
+            mkdir -p ./artifact1/
+            mv friendlywrt-rk3328.tar.gz ./artifact1/
+            zip -r artifact1.zip ./artifact1/
+      - name: Upload artifact1
+        uses: actions/upload-artifact@master
+        with:
+          name: OpenWrt firmware code
+          path: ./artifact1/
 
 
 
@@ -117,17 +115,19 @@ jobs:
       - name: Assemble Artifact2
         id: assemble_artifact2
         run: |
-          mv friendlywrt-rk3328/out/*img* ./artifact/
-          cp friendlywrt-rk3328/friendlywrt/.config ./artifact/
-          cd ./artifact/
+          rm -rf ./artifact2/
+          mkdir -p ./artifact2/
+          mv friendlywrt-rk3328/out/*img* ./artifact2/
+          cp friendlywrt-rk3328/friendlywrt/.config ./artifact2/
+          cd ./artifact2/
           md5sum *img* > md5sum.txt
           cd ..
-          zip -r artifact.zip ./artifact/
-      - name: Upload artifact
+          zip -r artifact2.zip ./artifact2/
+      - name: Upload artifact2
         uses: actions/upload-artifact@master
         with:
-          name: OpenWrt firmware
-          path: ./artifact/
+          name: OpenWrt firmware bin
+          path: ./artifact2/
 
 
 
