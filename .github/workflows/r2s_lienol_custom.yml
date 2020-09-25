@@ -107,27 +107,27 @@ jobs:
 
       - name: Build FriendlyWrt
         run: |
-          # cd friendlywrt-rk3328
-          # sed -i 's/set -eu/set -u/' scripts/mk-friendlywrt.sh
-          # ./build.sh nanopi_r2s.mk
-          # cd .. && sudo bash fix_ownership.sh
+          cd friendlywrt-rk3328
+          sed -i 's/set -eu/set -u/' scripts/mk-friendlywrt.sh
+          ./build.sh nanopi_r2s.mk
+          cd .. && sudo bash fix_ownership.sh
 
-      - name: Assemble Artifact2
-        id: assemble_artifact2
+      - name: Assemble Artifact
+        id: assemble_artifact
         run: |
-          rm -rf ./artifact2/
-          mkdir -p ./artifact2/
-          mv friendlywrt-rk3328/out/*img* ./artifact2/
-          cp friendlywrt-rk3328/friendlywrt/.config ./artifact2/
-          cd ./artifact2/
+          rm -rf ./artifact/
+          mkdir -p ./artifact/
+          mv friendlywrt-rk3328/out/*img* ./artifact/
+          cp friendlywrt-rk3328/friendlywrt/.config ./artifact/
+          cd ./artifact/
           md5sum *img* > md5sum.txt
           cd ..
-          zip -r artifact2.zip ./artifact2/
-      - name: Upload artifact2
+          zip -r artifact.zip ./artifact/
+      - name: Upload artifact
         uses: actions/upload-artifact@master
         with:
           name: OpenWrt firmware bin
-          path: ./artifact2/
+          path: ./artifact/
 
 
 
