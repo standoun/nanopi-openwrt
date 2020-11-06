@@ -103,8 +103,6 @@ jobs:
           path: ./artifact1/
 
 
-
-
       - name: Build FriendlyWrt
         run: |
           cd friendlywrt-rk3328
